@@ -6,12 +6,26 @@ const loadLessons = () => {
     .then((res) => res.json())
     .then((json) => displayLesson(json.data));
 };
+
+//function
+const removeActive = () => {
+  const lessonButtons = document.querySelectorAll(".lesson-btn");
+  //   console.log(lessonButtons);
+  lessonButtons.forEach((btn) => btn.classList.remove("active"));
+};
+
 const loadLevelWord = (id) => {
   // used back-tic because it's dynamic if anyone click.
   const url = `https://openapi.programming-hero.com/api/level/${id}`;
   fetch(url)
     .then((res) => res.json())
-    .then((data) => displayLevelWord(data.data));
+    .then((data) => {
+      removeActive(); //remove all active class
+      const clickBtn = document.getElementById(`lesson-btn-${id}`);
+      //   console.log(clickBtn);
+      clickBtn.classList.add("active"); // add active class
+      displayLevelWord(data.data);
+    });
 };
 
 const displayLevelWord = (words) => {
@@ -57,7 +71,7 @@ const displayLevelWord = (words) => {
       word.pronunciation ? word.pronunciation : "pronunciation পাওয়া যায়নি"
     }"</div>
         <div class="flex justify-between items-center">
-          <button class="btn bg-[#1a91ff1a] hover:bg-sky-300">
+          <button onclick="my_modal_5.showModal()" class="btn bg-[#1a91ff1a] hover:bg-sky-300">
             <i class="fa-solid fa-circle-info"></i>
           </button>
           <button class="btn bg-[#4196e61a] hover:bg-sky-300">
@@ -79,9 +93,9 @@ const displayLesson = (lessons) => {
   const levelContainer = document.getElementById("level-container");
   levelContainer.innerHTML = "";
   for (let lesson of lessons) {
-    console.log(lesson);
+    // console.log(lesson);
     const btnDiv = document.createElement("div");
-    btnDiv.innerHTML = ` <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>
+    btnDiv.innerHTML = ` <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn"><i class="fa-solid fa-book-open"></i>Lesson - ${lesson.level_no}</button>
     `;
 
     levelContainer.append(btnDiv);
